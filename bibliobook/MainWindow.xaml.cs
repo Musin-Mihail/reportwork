@@ -13,65 +13,83 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using booksdto;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace bibliobook
 {
-    public partial class MainWindow : Window
+    public class BibliobookClass
     {
-        List<Person> listPerson = new List<Person>();
-        List<string> listBooks = new List<string>();
-        public MainWindow()
+        HttpClient client = new HttpClient();
+        public List<Person> CreatePerson()
         {
-            InitializeComponent();
-            CreatePerson();
-            CreateBooks();
+            var result = client.GetStringAsync("https://localhost:5001/Books/CreatePersons/");
+            Task.Delay(1000).Wait();
+            return JsonConvert.DeserializeObject<List<Person>>(result.Result);
         }
-        void CreatePerson()
+        public List<Book> CreateBooks()
         {
-            Person person = new Person();
-            person.name = "Имя1";
-            person.books.Add("КнигаНаРуках1");
-            person.status = "schoolboy";
-            listPerson.Add(person);
-
-            person = new Person();
-            person.name = "Имя2";
-            person.books.Add("КнигаНаРуках2");
-            person.status = "student";
-            listPerson.Add(person);
-
-            person = new Person();
-            person.name = "Имя3";
-            person.books.Add("КнигаНаРуках3");
-            person.status = "employee";
-            listPerson.Add(person);
+            var result = client.GetStringAsync("https://localhost:5001/Books/CreateBooks/");
+            Task.Delay(1000).Wait();
+            return JsonConvert.DeserializeObject<List<Book>>(result.Result);
         }
-        void CreateBooks()
+        public List<string> RefreshBooksLibrary(List<Book> listBooks)
         {
-            for (int i = 1; i < 6; i++)
+            List<string> newBookList = new List<string>();
+            foreach (Book book in listBooks)
             {
-                listBooks.Add("Книга" + i);
+                newBookList.Add($"{book.firstNameAuthor} {book.lastNameAuthor} {book.nameBook}");
             }
+            return newBookList;
         }
-        private void ComboPerson_Loaded(object sender, RoutedEventArgs e)
+        public List<string> CreateStringListBook(Person person)
+        {
+            List<string> infoListBoks = new List<string>();
+            foreach (Book book in person.books)
+            {
+                infoListBoks.Add($"{book.lastNameAuthor} {book.firstNameAuthor} {book.nameBook}");
+            }
+            return infoListBoks;
+        }
+        public List<string> RefreshPerson(List<Person> listPerson)
         {
             List<string> newComboList = new List<string>();
             foreach (Person person in listPerson)
             {
-                newComboList.Add(person.name);
+                newComboList.Add($"{person.firstName} {person.lastName} {person.middleName}");
             }
-            ComboPerson.ItemsSource = newComboList;
-            ComboPerson.SelectedIndex = 0;
-            AddInfo(listPerson[ComboPerson.SelectedIndex]);
+            return newComboList;
         }
-        void AddInfo(Person person)
+    }
+    public partial class Bibliobook : Window
+    {
+        BibliobookClass bibliobookClass = new BibliobookClass();
+        HttpClient client = new HttpClient();
+        public List<Person> listPerson = new List<Person>();
+        public List<Book> listBooks = new List<Book>();
+        public Bibliobook()
         {
-            List<string> infoListBoks = new List<string>();
-            foreach (string book in person.books)
+            InitializeComponent();
+            listPerson = bibliobookClass.CreatePerson();
+            listBooks = bibliobookClass.CreateBooks();
+        }
+        private void ComboPerson_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<string> newComboList = bibliobookClass.RefreshPerson(listPerson);
+            if (newComboList.Count > 0)
             {
-                infoListBoks.Add(book);
+                ComboPerson.ItemsSource = newComboList;
+                ComboPerson.SelectedIndex = 0;
+                AddInfo(listPerson[ComboPerson.SelectedIndex]);
             }
-            ListPersonBooks.ItemsSource = infoListBoks;
+        }
+        private void ListBooks_Loaded(object sender, RoutedEventArgs e)
+        {
+            ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
+        }
+        public void AddInfo(Person person)
+        {
+            ListPersonBooks.ItemsSource = bibliobookClass.CreateStringListBook(person);
             if (person.status == "schoolboy")
             {
                 Schoolboy.IsChecked = true;
@@ -90,50 +108,57 @@ namespace bibliobook
                 Student.IsChecked = false;
                 Employee.IsChecked = true;
             }
-        }
-        private void ListBooks_Loaded(object sender, RoutedEventArgs e)
-        {
-            ListBooks.ItemsSource = listBooks;
+            else
+            {
+                Schoolboy.IsChecked = false;
+                Student.IsChecked = false;
+                Employee.IsChecked = false;
+            }
         }
         private void Button_Click_Pass_Book(object sender, RoutedEventArgs e)
         {
             if (ListBooks.SelectedIndex >= 0 && ComboPerson.SelectedIndex >= 0)
             {
-                listPerson[ComboPerson.SelectedIndex].books.Add(listBooks[ListBooks.SelectedIndex]);
-                AddInfo(listPerson[ComboPerson.SelectedIndex]);
-                listBooks.RemoveAt(ListBooks.SelectedIndex);
-                ListBooks.ItemsSource = null;
-                ListBooks.ItemsSource = listBooks;
+                int indexPerson = ComboPerson.SelectedIndex;
+                int indexBookLibrary = ListBooks.SelectedIndex;
+                Person person = listPerson[indexPerson];
+                Book book = listBooks[indexBookLibrary];
+                person.books.Add(book);
+                AddInfo(person);
+                listBooks.RemoveAt(indexBookLibrary);
+                ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
             }
         }
         private void Button_Click_Transfer_Library(object sender, RoutedEventArgs e)
         {
             if (ListPersonBooks.SelectedIndex >= 0 && ComboPerson.SelectedIndex >= 0)
             {
-                listBooks.Add(listPerson[ComboPerson.SelectedIndex].books[ListPersonBooks.SelectedIndex]);
-                listPerson[ComboPerson.SelectedIndex].books.RemoveAt(ListPersonBooks.SelectedIndex);
-                AddInfo(listPerson[ComboPerson.SelectedIndex]);
-                ListBooks.ItemsSource = null;
-                ListBooks.ItemsSource = listBooks;
+                int indexPerson = ComboPerson.SelectedIndex;
+                int indexBookPerson = ListPersonBooks.SelectedIndex;
+                Person person = listPerson[indexPerson];
+                Book book = person.books[indexBookPerson];
+                listBooks.Add(book);
+                person.books.RemoveAt(indexBookPerson);
+                AddInfo(person);
+                ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
             }
         }
         private void ComboPerson_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             AddInfo(listPerson[ComboPerson.SelectedIndex]);
         }
-
         private void Button_Click_Transfer_All_Library(object sender, RoutedEventArgs e)
         {
             if (ComboPerson.SelectedIndex >= 0)
             {
-                listBooks.AddRange(listPerson[ComboPerson.SelectedIndex].books);
-                listPerson[ComboPerson.SelectedIndex].books.Clear();
-                AddInfo(listPerson[ComboPerson.SelectedIndex]);
-                ListBooks.ItemsSource = null;
-                ListBooks.ItemsSource = listBooks;
+                int indexPerson = ComboPerson.SelectedIndex;
+                Person person = listPerson[indexPerson];
+                listBooks.AddRange(person.books);
+                person.books.Clear();
+                AddInfo(person);
+                ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
             }
         }
-
         private void Button_Click_Exit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
