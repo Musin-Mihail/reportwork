@@ -18,64 +18,21 @@ using Newtonsoft.Json;
 
 namespace bibliobook
 {
-    public class BibliobookClass
-    {
-        HttpClient client = new HttpClient();
-        public List<Person> CreatePerson()
-        {
-            var result = client.GetStringAsync("https://localhost:5001/Books/CreatePersons/");
-            Task.Delay(1000).Wait();
-            return JsonConvert.DeserializeObject<List<Person>>(result.Result);
-        }
-        public List<Book> CreateBooks()
-        {
-            var result = client.GetStringAsync("https://localhost:5001/Books/CreateBooks/");
-            Task.Delay(1000).Wait();
-            return JsonConvert.DeserializeObject<List<Book>>(result.Result);
-        }
-        public List<string> RefreshBooksLibrary(List<Book> listBooks)
-        {
-            List<string> newBookList = new List<string>();
-            foreach (Book book in listBooks)
-            {
-                newBookList.Add($"{book.firstNameAuthor} {book.lastNameAuthor} {book.nameBook}");
-            }
-            return newBookList;
-        }
-        public List<string> CreateStringListBook(Person person)
-        {
-            List<string> infoListBoks = new List<string>();
-            foreach (Book book in person.books)
-            {
-                infoListBoks.Add($"{book.lastNameAuthor} {book.firstNameAuthor} {book.nameBook}");
-            }
-            return infoListBoks;
-        }
-        public List<string> RefreshPerson(List<Person> listPerson)
-        {
-            List<string> newComboList = new List<string>();
-            foreach (Person person in listPerson)
-            {
-                newComboList.Add($"{person.firstName} {person.lastName} {person.middleName}");
-            }
-            return newComboList;
-        }
-    }
     public partial class Bibliobook : Window
     {
-        BibliobookClass bibliobookClass = new BibliobookClass();
+        DTOClass dtoClass = new DTOClass();
         HttpClient client = new HttpClient();
         public List<Person> listPerson = new List<Person>();
         public List<Book> listBooks = new List<Book>();
         public Bibliobook()
         {
             InitializeComponent();
-            listPerson = bibliobookClass.CreatePerson();
-            listBooks = bibliobookClass.CreateBooks();
+            listPerson = dtoClass.CreatePerson();
+            listBooks = dtoClass.CreateBooks();
         }
         private void ComboPerson_Loaded(object sender, RoutedEventArgs e)
         {
-            List<string> newComboList = bibliobookClass.RefreshPerson(listPerson);
+            List<string> newComboList = dtoClass.RefreshPerson(listPerson);
             if (newComboList.Count > 0)
             {
                 ComboPerson.ItemsSource = newComboList;
@@ -85,11 +42,11 @@ namespace bibliobook
         }
         private void ListBooks_Loaded(object sender, RoutedEventArgs e)
         {
-            ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
+            ListBooks.ItemsSource = dtoClass.RefreshBooksLibrary(listBooks);
         }
         public void AddInfo(Person person)
         {
-            ListPersonBooks.ItemsSource = bibliobookClass.CreateStringListBook(person);
+            ListPersonBooks.ItemsSource = dtoClass.CreateStringListBook(person);
             if (person.status == "schoolboy")
             {
                 Schoolboy.IsChecked = true;
@@ -126,7 +83,7 @@ namespace bibliobook
                 person.books.Add(book);
                 AddInfo(person);
                 listBooks.RemoveAt(indexBookLibrary);
-                ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
+                ListBooks.ItemsSource = dtoClass.RefreshBooksLibrary(listBooks);
             }
         }
         private void Button_Click_Transfer_Library(object sender, RoutedEventArgs e)
@@ -140,7 +97,7 @@ namespace bibliobook
                 listBooks.Add(book);
                 person.books.RemoveAt(indexBookPerson);
                 AddInfo(person);
-                ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
+                ListBooks.ItemsSource = dtoClass.RefreshBooksLibrary(listBooks);
             }
         }
         private void ComboPerson_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -156,7 +113,7 @@ namespace bibliobook
                 listBooks.AddRange(person.books);
                 person.books.Clear();
                 AddInfo(person);
-                ListBooks.ItemsSource = bibliobookClass.RefreshBooksLibrary(listBooks);
+                ListBooks.ItemsSource = dtoClass.RefreshBooksLibrary(listBooks);
             }
         }
         private void Button_Click_Exit(object sender, RoutedEventArgs e)

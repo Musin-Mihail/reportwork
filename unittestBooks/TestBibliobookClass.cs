@@ -73,35 +73,35 @@ namespace unittestBooks
         [TestMethod]
         public void Test1CreatePerson()
         {
-            BibliobookClass bibliobook = new BibliobookClass();
+            DTOClass bibliobook = new DTOClass();
             List<Person> listPerson = bibliobook.CreatePerson();
             Assert.AreEqual(3, listPerson.Count);
         }
         [TestMethod]
         public void Test2CreateBooks()
         {
-            BibliobookClass bibliobook = new BibliobookClass();
+            DTOClass bibliobook = new DTOClass();
             List<Book> listBooks = bibliobook.CreateBooks();
             Assert.AreEqual(5, listBooks.Count);
         }
         [TestMethod]
         public void Test3RefreshBooksLibrary()
         {
-            BibliobookClass bibliobook = new BibliobookClass();
+            DTOClass bibliobook = new DTOClass();
             List<string> newBookList = bibliobook.RefreshBooksLibrary(listBooks);
             Assert.AreEqual(5, newBookList.Count);
         }
         [TestMethod]
         public void Test4CreateStringListBook()
         {
-            BibliobookClass bibliobook = new BibliobookClass();
+            DTOClass bibliobook = new DTOClass();
             List<string> infoListBoks = bibliobook.CreateStringListBook(listPerson[0]);
             Assert.AreEqual(1, infoListBoks.Count);
         }
         [TestMethod]
         public void Test5RefreshPerson()
         {
-            BibliobookClass bibliobook = new BibliobookClass();
+            DTOClass bibliobook = new DTOClass();
             List<string> infoListBoks = bibliobook.RefreshPerson(listPerson);
             Assert.AreEqual(3, infoListBoks.Count);
         }
