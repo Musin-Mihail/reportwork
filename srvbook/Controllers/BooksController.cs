@@ -24,7 +24,7 @@ namespace srvbook.Controllers
             Book book = new Book();
             book.firstNameAuthor = "ИмяАвтора1";
             book.lastNameAuthor = "ФамилияАвтора1";
-            book.nameBook = "Название книги1";
+            book.nameBook = "Название_книги1";
             person.books.Add(book);
             person.status = "schoolboy";
             listPerson.Add(person);
@@ -36,7 +36,7 @@ namespace srvbook.Controllers
             book = new Book();
             book.firstNameAuthor = "ИмяАвтора2";
             book.lastNameAuthor = "ФамилияАвтора2";
-            book.nameBook = "Название книги2";
+            book.nameBook = "Название_книги2";
             person.books.Add(book);
             person.status = "student";
             listPerson.Add(person);
@@ -48,7 +48,7 @@ namespace srvbook.Controllers
             book = new Book();
             book.firstNameAuthor = "ИмяАвтора3";
             book.lastNameAuthor = "ФамилияАвтора3";
-            book.nameBook = "Название книги3";
+            book.nameBook = "Название_книги3";
             person.books.Add(book);
             person.status = "employee";
             listPerson.Add(person);
@@ -170,7 +170,7 @@ namespace srvbook.Controllers
         public void AddBookLibrary(string book)
         {
             Book book2 = JsonConvert.DeserializeObject<Book>(book);
-            string sql = $"INSERT INTO dbo.Books(firstNameAuthor, lastNameAuthor, nameBook) VALUES('{book2.firstNameAuthor}', '{book2.firstNameAuthor}', '{book2.nameBook}')";
+            string sql = $"INSERT INTO dbo.Books(firstNameAuthor, lastNameAuthor, nameBook) VALUES('{book2.firstNameAuthor}', '{book2.lastNameAuthor}', '{book2.nameBook}')";
             SqlCommand command = new SqlCommand(sql, ConnectBD());
             command.ExecuteReader();
             Console.WriteLine("AddBookLibrary");
@@ -182,6 +182,15 @@ namespace srvbook.Controllers
             //listBooks.AddRange(listPerson[indexPerson].books);
             //listPerson[indexPerson].books.Clear();
             Console.WriteLine("TransferAllLibrary");
+        }
+        [HttpGet]
+        [Route("/Books/RemoveAllBookLibrary/")]
+        public void RemoveAllBookLibrary(int indexPerson)
+        {
+            string sql = "DELETE FROM Books";
+            SqlCommand command = new SqlCommand(sql, ConnectBD());
+            command.ExecuteReader();
+            Console.WriteLine("RemoveAllBookLibrary");
         }
     }
 }

@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:bibliobook"
         mc:Ignorable="d"
-        Title="MainWindow" Height="430" Width="539">
+        Title="MainWindow" Height="525" Width="539">
     <Grid>
         <GroupBox Header="Карточка читателя" Height="202" Margin="0,0,0,0" Visibility="Visible" Width="300"  HorizontalAlignment="Left" VerticalAlignment="Top" >
             <Grid>
@@ -24,9 +24,23 @@
         <GroupBox Header="Книги на руках читателя" Margin="7,212,0,0" Visibility="Visible" Width="290" Height="171" HorizontalAlignment="Left" VerticalAlignment="Top">
             <ListBox x:Name="ListPersonBooks" Margin="10,15,0,0" Width="258" Height="127"  HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="9"/>
         </GroupBox>
-        <Button Content="Выход" HorizontalAlignment="Left" Margin="315,356,0,0" VerticalAlignment="Top" Click="Button_Click_Exit"/>
+        <GroupBox Header="Новая книга" Height="100" Margin="0,400,0,0" Visibility="Visible" Width="362"  HorizontalAlignment="Left" VerticalAlignment="Top" >
+            <Grid>
+                <Label  Content="Имя автора" HorizontalAlignment="Left" Margin="5,5,0,0" VerticalAlignment="Top"/>
+                <Label Content="Фамилия автора" HorizontalAlignment="Left" Margin="5,25,0,0" VerticalAlignment="Top"/>
+                <Label Content="Название книги" HorizontalAlignment="Left" Margin="5,45,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name ="FirstNameAuthor" HorizontalAlignment="Left" Margin="120,10,0,0" TextWrapping="Wrap" Text="Лев" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name ="LastNameAuthor" HorizontalAlignment="Left" Margin="120,30,0,0" TextWrapping="Wrap" Text="Толстой" VerticalAlignment="Top" Width="120"/>
+                <TextBox x:Name ="NameBook" HorizontalAlignment="Left" Margin="120,50,0,0" TextWrapping="Wrap" Text="Анна Каренина" VerticalAlignment="Top" Width="120"/>
+                <Button Content="Добавить книгу" HorizontalAlignment="Left" Margin="250,30,0,0" VerticalAlignment="Top" Click="Button_Click_Add_Book_Library"/>
+            </Grid>
+        </GroupBox>
+        <Button Content="Выход" HorizontalAlignment="Left" Margin="466,465,0,0" VerticalAlignment="Top" Click="Button_Click_Exit"/>
         <Button Content="Передать все книги в библиотеку" HorizontalAlignment="Left" Margin="315,70,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_All_Library"/>
         <Button Content="Передать книгу в библиотеку" HorizontalAlignment="Left" Margin="315,41,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_Library"/>
         <Button Content="Передать книгу читателю" HorizontalAlignment="Left" Margin="315,10,0,0" VerticalAlignment="Top" Click="Button_Click_Pass_Book"/>
+        <Button Content="Удалить книгу из библиотеки" HorizontalAlignment="Left" Margin="315,137,0,0" VerticalAlignment="Top" Click="Button_Click_Remove_Book_Library"/>
+        <Button Content="Удалить все книги из библиотеки" HorizontalAlignment="Left" Margin="315,175,0,0" VerticalAlignment="Top" Click="Button_Click_Remove_AllBook_Library" />
+
     </Grid>
 </Window>

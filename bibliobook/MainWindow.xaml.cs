@@ -122,7 +122,8 @@ namespace bibliobook
                 List<string> book = new List<string>(ListBooks.Items[ListBooks.SelectedIndex].ToString().Split(' '));
                 string firstNameAuthor = book[0];
                 string lastNameAuthor = book[1];
-                string nameBook = book[2] + " " + book[3];
+                string nameBook = book[2];
+                //Сделать обработку пробелов в название книг.
                 AddBookPerson(indexPerson, indexBookLibrary);
                 AddInfo();
                 RemoveBookLibrary(firstNameAuthor, lastNameAuthor, nameBook);
@@ -178,6 +179,33 @@ namespace bibliobook
         private void Button_Click_Exit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+        private void Button_Click_Remove_Book_Library(object sender, RoutedEventArgs e)
+        {
+            List<string> book = new List<string>(ListBooks.Items[ListBooks.SelectedIndex].ToString().Split(' '));
+            string firstNameAuthor = book[0];
+            string lastNameAuthor = book[1];
+            string nameBook = book[2];
+            //Сделать обработку пробелов в название книг.
+            RemoveBookLibrary(firstNameAuthor, lastNameAuthor, nameBook);
+            RefreshBooksLibrary();
+        }
+
+        private void Button_Click_Add_Book_Library(object sender, RoutedEventArgs e)
+        {
+            Book book = new Book();
+            book.firstNameAuthor = FirstNameAuthor.Text;
+            book.lastNameAuthor = LastNameAuthor.Text;
+            string nameBook = NameBook.Text.Replace(' ', '_');
+            book.nameBook = nameBook;
+            AddBookLibrary(book);
+            RefreshBooksLibrary();
+        }
+        private void Button_Click_Remove_AllBook_Library(object sender, RoutedEventArgs e)
+        {
+            client.GetStringAsync($"https://localhost:5001/Books/RemoveAllBookLibrary/");
+            Task.Delay(500).Wait();
+            RefreshBooksLibrary();
         }
     }
 }
