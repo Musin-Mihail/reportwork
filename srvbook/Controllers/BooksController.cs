@@ -11,7 +11,6 @@ namespace srvbook.Controllers
     {
         DTOClass dtoClass = new DTOClass();
         static List<Person> listPerson = new List<Person>();
-        //static List<Book> listBooks = new List<Book>();
         [HttpGet]
         [Route("/Books/CreatePersons/")]
         public void CreatePerson()
@@ -159,10 +158,11 @@ namespace srvbook.Controllers
             Console.WriteLine("FinishRemoveBookPerson");
         }
         [HttpGet]
-        [Route("/Books/AddBookPerson/{indexPerson},{indexBook}")]
-        public void AddBookPerson(int indexPerson, int indexBook)
+        [Route("/Books/AddBookPerson/{book},{indexPerson}")]
+        public void AddBookPerson(string book,int indexPerson)
         {
-            //listPerson[indexPerson].books.Add(listBooks[indexBook]);
+            Book book1 = JsonConvert.DeserializeObject<Book>(book);
+            listPerson[indexPerson].books.Add(book1);
             Console.WriteLine("AddBookPerson");
         }
         [HttpGet]
@@ -179,8 +179,12 @@ namespace srvbook.Controllers
         [Route("/Books/TransferAllLibrary/{indexPerson}")]
         public void TransferAllLibrary(int indexPerson)
         {
-            //listBooks.AddRange(listPerson[indexPerson].books);
-            //listPerson[indexPerson].books.Clear();
+            foreach (Book book in listPerson[indexPerson].books)
+            {
+                string result = JsonConvert.SerializeObject(book);
+                AddBookLibrary(result);
+            }
+            listPerson[indexPerson].books.Clear();
             Console.WriteLine("TransferAllLibrary");
         }
         [HttpGet]

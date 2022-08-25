@@ -123,8 +123,11 @@ namespace bibliobook
                 string firstNameAuthor = book[0];
                 string lastNameAuthor = book[1];
                 string nameBook = book[2];
-                //Сделать обработку пробелов в название книг.
-                AddBookPerson(indexPerson, indexBookLibrary);
+                Book book1 = new Book();
+                book1.firstNameAuthor = firstNameAuthor;
+                book1.lastNameAuthor = lastNameAuthor;
+                book1.nameBook = nameBook;
+                AddBookPerson(book1, indexPerson);
                 AddInfo();
                 RemoveBookLibrary(firstNameAuthor, lastNameAuthor, nameBook);
                 RefreshBooksLibrary();
@@ -147,9 +150,10 @@ namespace bibliobook
         {
             AddInfo();
         }
-        void AddBookPerson(int indexPerson, int indexBook)
+        void AddBookPerson(Book book, int indexPerson)
         {
-            client.GetStringAsync($"https://localhost:5001/Books/AddBookPerson/{indexPerson},{indexBook}");
+            string result = JsonConvert.SerializeObject(book);
+            client.GetStringAsync($"https://localhost:5001/Books/AddBookPerson/{result},{indexPerson}");
             Task.Delay(500).Wait();
         }
         void AddBookLibrary(Book book)
