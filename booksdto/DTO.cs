@@ -46,7 +46,7 @@ namespace booksdto
             List<string> infoListBoks = new List<string>();
             foreach (Book book in person.books)
             {
-                infoListBoks.Add($"{book.lastNameAuthor} {book.firstNameAuthor} {book.nameBook}");
+                infoListBoks.Add($"{book.firstNameAuthor} {book.lastNameAuthor} {book.nameBook}");
             }
             return infoListBoks;
         }
