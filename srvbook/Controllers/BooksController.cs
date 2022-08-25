@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using booksdto;
 using Newtonsoft.Json;
+using System.Data.SqlClient;
 
 namespace srvbook.Controllers
 {
@@ -10,7 +11,7 @@ namespace srvbook.Controllers
     {
         DTOClass dtoClass = new DTOClass();
         static List<Person> listPerson = new List<Person>();
-        static List<Book> listBooks = new List<Book>();
+        //static List<Book> listBooks = new List<Book>();
         [HttpGet]
         [Route("/Books/CreatePersons/")]
         public void CreatePerson()
@@ -53,23 +54,35 @@ namespace srvbook.Controllers
             listPerson.Add(person);
 
             Console.WriteLine("CreatePerson");
-
         }
         [HttpGet]
-        [Route("/Books/CreateBooks/")]
-        public void CreateBooks()
+        [Route("/Books/Test/")]
+        public string Test()
         {
-            listBooks.Clear();
-            listBooks = new List<Book>();
-            for (int i = 1; i < 6; i++)
+            string sql = "SELECT * FROM Books WHERE row_id=1";
+            SqlCommand command = new SqlCommand(sql, ConnectBD());
+            SqlDataReader reader = command.ExecuteReader();
+            string testing = "";
+            while (reader.Read())
             {
-                Book book = new Book();
-                book.firstNameAuthor = i + "ИмяАвтора";
-                book.lastNameAuthor = i + "ФамилияАвтора";
-                book.nameBook = i + "Название книги";
-                listBooks.Add(book);
+                testing += reader.GetString(0);
+                testing += reader.GetString(1);
+                testing += reader.GetString(2);
             }
-            Console.WriteLine("CreateBooks");
+            return testing;
+        }
+        SqlConnection ConnectBD()
+        {
+            SqlConnection connection;
+            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+            builder.DataSource = "OSNOVA\\SQLEXPRESS";
+            builder.UserID = "sa";
+            builder.Password = "123";
+            builder.InitialCatalog = "reportwork";
+            builder.MultipleActiveResultSets = true;
+            connection = new SqlConnection(builder.ConnectionString);
+            connection.Open();
+            return connection;
         }
         [HttpGet]
         [Route("/Books/RefreshPerson/")]
@@ -85,14 +98,30 @@ namespace srvbook.Controllers
         public string GetPerson(int index)
         {
             string result = JsonConvert.SerializeObject(listPerson[index]);
-            Console.WriteLine("GetPerson"+ index);
+            Console.WriteLine("GetPerson" + index);
             return result;
+        }
+        List<Book> GetListBooks()
+        {
+            List<Book> listBooks = new List<Book>();
+            string sql = "SELECT * FROM Books";
+            SqlCommand command = new SqlCommand(sql, ConnectBD());
+            SqlDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {
+                Book book = new Book();
+                book.firstNameAuthor = reader.GetString(0);
+                book.lastNameAuthor = reader.GetString(1);
+                book.nameBook = reader.GetString(2);
+                listBooks.Add(book);
+            }
+            return listBooks;
         }
         [HttpGet]
         [Route("/Books/GetBookLibrary/{index}")]
         public string GetBookLibrary(int index)
         {
-            string result = JsonConvert.SerializeObject(listBooks[index]);
+            string result = JsonConvert.SerializeObject(GetListBooks()[index]);
             Console.WriteLine("GetBookLibrary");
             return result;
         }
@@ -108,25 +137,24 @@ namespace srvbook.Controllers
         [Route("/Books/RefreshBooksLibrary/")]
         public string RefreshBooksLibrary()
         {
-            List<string> newComboList = dtoClass.RefreshBooksLibrary(listBooks);
+            List<string> newComboList = dtoClass.RefreshBooksLibrary(GetListBooks());
             string result = JsonConvert.SerializeObject(newComboList);
             Console.WriteLine("RefreshBooksLibrary");
             return result;
         }
         [HttpGet]
-        [Route("/Books/RemoveBookLibrary/{index}")]
-        public void RemoveBookLibrary(int index)
+        [Route("/Books/RemoveBookLibrary/{firstNameAuthor},{lastNameAuthor},{nameBook}")]
+        public void RemoveBookLibrary(string firstNameAuthor, string lastNameAuthor, string nameBook)
         {
-            listBooks.RemoveAt(index);
-            Console.WriteLine("RemoveBookLibrary");
+            string sql = $"DELETE FROM Books WHERE firstNameAuthor='{firstNameAuthor}' AND lastNameAuthor='{lastNameAuthor}' AND nameBook='{nameBook}'";
+            SqlCommand command = new SqlCommand(sql, ConnectBD());
+            command.ExecuteReader();
+            Console.WriteLine($"RemoveBookLibrary{firstNameAuthor} {lastNameAuthor} {nameBook}");
         }
         [HttpGet]
         [Route("/Books/RemoveBookPerson/{indexPerson},{indexBook}")]
         public void RemoveBookPerson(int indexPerson, int indexBook)
         {
-            Console.WriteLine("StartRemoveBookPerson");
-            Console.WriteLine($"{indexPerson} {indexBook}" );
-            Console.WriteLine($"{listPerson.Count} {listPerson[indexPerson].books.Count}");
             listPerson[indexPerson].books.RemoveAt(indexBook);
             Console.WriteLine("FinishRemoveBookPerson");
         }
@@ -134,22 +162,25 @@ namespace srvbook.Controllers
         [Route("/Books/AddBookPerson/{indexPerson},{indexBook}")]
         public void AddBookPerson(int indexPerson, int indexBook)
         {
-            listPerson[indexPerson].books.Add(listBooks[ indexBook]);
+            //listPerson[indexPerson].books.Add(listBooks[indexBook]);
             Console.WriteLine("AddBookPerson");
         }
         [HttpGet]
         [Route("/Books/AddBookLibrary/{book}")]
         public void AddBookLibrary(string book)
         {
-            listBooks.Add(JsonConvert.DeserializeObject<Book>(book));
+            Book book2 = JsonConvert.DeserializeObject<Book>(book);
+            string sql = $"INSERT INTO dbo.Books(firstNameAuthor, lastNameAuthor, nameBook) VALUES('{book2.firstNameAuthor}', '{book2.firstNameAuthor}', '{book2.nameBook}')";
+            SqlCommand command = new SqlCommand(sql, ConnectBD());
+            command.ExecuteReader();
             Console.WriteLine("AddBookLibrary");
         }
         [HttpGet]
         [Route("/Books/TransferAllLibrary/{indexPerson}")]
         public void TransferAllLibrary(int indexPerson)
         {
-            listBooks.AddRange(listPerson[indexPerson].books);
-            listPerson[indexPerson].books.Clear();
+            //listBooks.AddRange(listPerson[indexPerson].books);
+            //listPerson[indexPerson].books.Clear();
             Console.WriteLine("TransferAllLibrary");
         }
     }

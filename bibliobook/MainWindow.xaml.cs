@@ -16,6 +16,7 @@ using booksdto;
 using System.Net.Http;
 using Newtonsoft.Json;
 using System.Reflection;
+using System.Windows.Markup;
 
 namespace bibliobook
 {
@@ -27,7 +28,6 @@ namespace bibliobook
         {
             InitializeComponent();
             dtoClass.CreatePerson();
-            dtoClass.CreateBooks();
         }
         private void ComboPerson_Loaded(object sender, RoutedEventArgs e)
         {
@@ -103,9 +103,9 @@ namespace bibliobook
             Task.Delay(500).Wait();
             return JsonConvert.DeserializeObject<Book>(result.Result);
         }
-        void RemoveBookLibrary(int index)
+        void RemoveBookLibrary(string firstNameAuthor, string lastNameAuthor, string nameBook)
         {
-            client.GetStringAsync($"https://localhost:5001/Books/RemoveBookLibrary/{index}");
+            client.GetStringAsync($"https://localhost:5001/Books/RemoveBookLibrary/{firstNameAuthor},{lastNameAuthor},{nameBook}");
             Task.Delay(500).Wait();
         }
         void RemoveBookPerson(int indexPerson, int indexBook)
@@ -119,9 +119,13 @@ namespace bibliobook
             {
                 int indexPerson = ComboPerson.SelectedIndex;
                 int indexBookLibrary = ListBooks.SelectedIndex;
+                List<string> book = new List<string>(ListBooks.Items[ListBooks.SelectedIndex].ToString().Split(' '));
+                string firstNameAuthor = book[0];
+                string lastNameAuthor = book[1];
+                string nameBook = book[2] + " " + book[3];
                 AddBookPerson(indexPerson, indexBookLibrary);
                 AddInfo();
-                RemoveBookLibrary(indexBookLibrary);
+                RemoveBookLibrary(firstNameAuthor, lastNameAuthor, nameBook);
                 RefreshBooksLibrary();
             }
         }
