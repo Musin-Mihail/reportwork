@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:bibliobook"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="430" Width="539">
     <Grid>
-
+        <GroupBox Header="Карточка читателя" Height="202" Margin="0,0,0,0" Visibility="Visible" Width="300"  HorizontalAlignment="Left" VerticalAlignment="Top" />
+        <GroupBox Header="Статус" Margin="10,68,0,0" Visibility="Visible" Width="113" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <GroupBox Header="Книги на руках читателя" Margin="7,212,0,0" Visibility="Visible" Width="290" Height="171" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <ComboBox x:Name="ComboPerson" Margin="93,31,0,0" VerticalAlignment="Top" Height="20" HorizontalAlignment="Left" Width="199" Loaded="ComboPerson_Loaded" SelectionChanged="ComboPerson_SelectionChanged"/>
+        <Label Content="Читатель" HorizontalAlignment="Left" Margin="10,25,0,0" VerticalAlignment="Top" Width="78"/>
+        <RadioButton x:Name="Schoolboy" Content="Школьник" HorizontalAlignment="Left" Margin="24,101,0,0" VerticalAlignment="Top" IsChecked="False" IsEnabled="False"/>
+        <RadioButton x:Name="Student" Content="Студент" HorizontalAlignment="Left" Margin="24,121,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+        <RadioButton x:Name="Employee" Content="Работник" HorizontalAlignment="Left" Margin="24,141,0,0" VerticalAlignment="Top" IsEnabled="False"/>
+        <ListBox x:Name="ListBooks" Margin="132,65,0,0" Height="120" Width="150"  HorizontalAlignment="Left" VerticalAlignment="Top" Loaded="ListBooks_Loaded"/>
+        <Button Content="Выход" HorizontalAlignment="Left" Margin="315,356,0,0" VerticalAlignment="Top" Click="Button_Click_Exit"/>
+        <Button Content="Передать все книги в библиотеку" HorizontalAlignment="Left" Margin="315,70,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_All_Library"/>
+        <Button Content="Передать книгу в библиотеку" HorizontalAlignment="Left" Margin="315,41,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_Library"/>
+        <Button Content="Передать книгу читателю" HorizontalAlignment="Left" Margin="315,10,0,0" VerticalAlignment="Top" Click="Button_Click_Pass_Book"/>
+        <ListBox x:Name="ListPersonBooks" Margin="21,239,0,0" Width="258" Height="127"  HorizontalAlignment="Left" VerticalAlignment="Top"/>
     </Grid>
 </Window>
