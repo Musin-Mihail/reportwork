@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using booksdto;
 using Newtonsoft.Json;
-using System.Data.SqlClient;
+using bookdb;
 
 namespace srvbook.Controllers
 {
@@ -10,6 +10,7 @@ namespace srvbook.Controllers
     public class BooksController : ControllerBase
     {
         DTOClass dtoClass = new DTOClass();
+        Bookdb bookdb = new Bookdb();
         static List<Person> listPerson = new List<Person>();
         [HttpGet]
         [Route("/Books/CreatePersons/")]
@@ -55,35 +56,6 @@ namespace srvbook.Controllers
             Console.WriteLine("CreatePerson");
         }
         [HttpGet]
-        [Route("/Books/Test/")]
-        public string Test()
-        {
-            string sql = "SELECT * FROM Books WHERE row_id=1";
-            SqlCommand command = new SqlCommand(sql, ConnectBD());
-            SqlDataReader reader = command.ExecuteReader();
-            string testing = "";
-            while (reader.Read())
-            {
-                testing += reader.GetString(0);
-                testing += reader.GetString(1);
-                testing += reader.GetString(2);
-            }
-            return testing;
-        }
-        SqlConnection ConnectBD()
-        {
-            SqlConnection connection;
-            SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
-            builder.DataSource = "OSNOVA\\SQLEXPRESS";
-            builder.UserID = "sa";
-            builder.Password = "123";
-            builder.InitialCatalog = "reportwork";
-            builder.MultipleActiveResultSets = true;
-            connection = new SqlConnection(builder.ConnectionString);
-            connection.Open();
-            return connection;
-        }
-        [HttpGet]
         [Route("/Books/RefreshPerson/")]
         public string RefreshPerson()
         {
@@ -100,27 +72,11 @@ namespace srvbook.Controllers
             Console.WriteLine("GetPerson" + index);
             return result;
         }
-        List<Book> GetListBooks()
-        {
-            List<Book> listBooks = new List<Book>();
-            string sql = "SELECT * FROM Books";
-            SqlCommand command = new SqlCommand(sql, ConnectBD());
-            SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                Book book = new Book();
-                book.firstNameAuthor = reader.GetString(0);
-                book.lastNameAuthor = reader.GetString(1);
-                book.nameBook = reader.GetString(2);
-                listBooks.Add(book);
-            }
-            return listBooks;
-        }
         [HttpGet]
         [Route("/Books/GetBookLibrary/{index}")]
         public string GetBookLibrary(int index)
         {
-            string result = JsonConvert.SerializeObject(GetListBooks()[index]);
+            string result = JsonConvert.SerializeObject(bookdb.GetListBooks()[index]);
             Console.WriteLine("GetBookLibrary");
             return result;
         }
@@ -136,7 +92,7 @@ namespace srvbook.Controllers
         [Route("/Books/RefreshBooksLibrary/")]
         public string RefreshBooksLibrary()
         {
-            List<string> newComboList = dtoClass.RefreshBooksLibrary(GetListBooks());
+            List<string> newComboList = dtoClass.RefreshBooksLibrary(bookdb.GetListBooks());
             string result = JsonConvert.SerializeObject(newComboList);
             Console.WriteLine("RefreshBooksLibrary");
             return result;
@@ -145,9 +101,7 @@ namespace srvbook.Controllers
         [Route("/Books/RemoveBookLibrary/{firstNameAuthor},{lastNameAuthor},{nameBook}")]
         public void RemoveBookLibrary(string firstNameAuthor, string lastNameAuthor, string nameBook)
         {
-            string sql = $"DELETE FROM Books WHERE firstNameAuthor='{firstNameAuthor}' AND lastNameAuthor='{lastNameAuthor}' AND nameBook='{nameBook}'";
-            SqlCommand command = new SqlCommand(sql, ConnectBD());
-            command.ExecuteReader();
+            bookdb.RemoveBookLibrary(firstNameAuthor, lastNameAuthor, nameBook);
             Console.WriteLine($"RemoveBookLibrary{firstNameAuthor} {lastNameAuthor} {nameBook}");
         }
         [HttpGet]
@@ -159,7 +113,7 @@ namespace srvbook.Controllers
         }
         [HttpGet]
         [Route("/Books/AddBookPerson/{book},{indexPerson}")]
-        public void AddBookPerson(string book,int indexPerson)
+        public void AddBookPerson(string book, int indexPerson)
         {
             Book book1 = JsonConvert.DeserializeObject<Book>(book);
             listPerson[indexPerson].books.Add(book1);
@@ -169,10 +123,7 @@ namespace srvbook.Controllers
         [Route("/Books/AddBookLibrary/{book}")]
         public void AddBookLibrary(string book)
         {
-            Book book2 = JsonConvert.DeserializeObject<Book>(book);
-            string sql = $"INSERT INTO dbo.Books(firstNameAuthor, lastNameAuthor, nameBook) VALUES('{book2.firstNameAuthor}', '{book2.lastNameAuthor}', '{book2.nameBook}')";
-            SqlCommand command = new SqlCommand(sql, ConnectBD());
-            command.ExecuteReader();
+            bookdb.AddBookLibrary(book);
             Console.WriteLine("AddBookLibrary");
         }
         [HttpGet]
@@ -189,11 +140,9 @@ namespace srvbook.Controllers
         }
         [HttpGet]
         [Route("/Books/RemoveAllBookLibrary/")]
-        public void RemoveAllBookLibrary(int indexPerson)
+        public void RemoveAllBookLibrary()
         {
-            string sql = "DELETE FROM Books";
-            SqlCommand command = new SqlCommand(sql, ConnectBD());
-            command.ExecuteReader();
+            bookdb.RemoveAllBookLibrary();
             Console.WriteLine("RemoveAllBookLibrary");
         }
     }
