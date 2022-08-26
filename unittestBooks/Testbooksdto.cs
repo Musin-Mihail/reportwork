@@ -1,11 +1,9 @@
-using bibliobook;
 using booksdto;
-using Newtonsoft.Json;
 
 namespace unittestBooks
 {
     [TestClass]
-    public class TestBibliobookClass
+    public class Testbooksdto
     {
         public List<Book> CreateBooks()
         {
@@ -69,40 +67,39 @@ namespace unittestBooks
             listBooks = CreateBooks();
             listPerson = CreatePerson();
         }
-
-        [TestMethod]
-        public void Test1CreatePerson()
-        {
-            DTOClass bibliobook = new DTOClass();
-            List<Person> listPerson = bibliobook.CreatePerson();
-            Assert.AreEqual(3, listPerson.Count);
-        }
-        [TestMethod]
-        public void Test2CreateBooks()
-        {
-            DTOClass bibliobook = new DTOClass();
-            List<Book> listBooks = bibliobook.CreateBooks();
-            Assert.AreEqual(5, listBooks.Count);
-        }
+        //[TestMethod]
+        //public void Test1CreatePerson()
+        //{
+        //    DTOClass dTOClass = new DTOClass();
+        //    List<Person> listPerson = dTOClass.CreatePerson();
+        //    Assert.AreEqual(3, listPerson.Count);
+        //}
+        //[TestMethod]
+        //public void Test2CreateBooks()
+        //{
+        //    DTOClass dTOClass = new DTOClass();
+        //    List<Book> listBooks = dTOClass.CreateBooks();
+        //    Assert.AreEqual(5, listBooks.Count);
+        //}
         [TestMethod]
         public void Test3RefreshBooksLibrary()
         {
-            DTOClass bibliobook = new DTOClass();
-            List<string> newBookList = bibliobook.RefreshBooksLibrary(listBooks);
+            DTOClass dTOClass = new DTOClass();
+            List<string> newBookList = dTOClass.RefreshBooksLibrary(listBooks);
             Assert.AreEqual(5, newBookList.Count);
         }
         [TestMethod]
         public void Test4CreateStringListBook()
         {
-            DTOClass bibliobook = new DTOClass();
-            List<string> infoListBoks = bibliobook.CreateStringListBook(listPerson[0]);
+            DTOClass dTOClass = new DTOClass();
+            List<string> infoListBoks = dTOClass.CreateStringListBook(listPerson[0]);
             Assert.AreEqual(1, infoListBoks.Count);
         }
         [TestMethod]
         public void Test5RefreshPerson()
         {
-            DTOClass bibliobook = new DTOClass();
-            List<string> infoListBoks = bibliobook.RefreshPerson(listPerson);
+            DTOClass dTOClass = new DTOClass();
+            List<string> infoListBoks = dTOClass.RefreshPerson(listPerson);
             Assert.AreEqual(3, infoListBoks.Count);
         }
     }

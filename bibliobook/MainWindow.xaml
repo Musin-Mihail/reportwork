@@ -36,11 +36,10 @@
             </Grid>
         </GroupBox>
         <Button Content="Выход" HorizontalAlignment="Left" Margin="466,465,0,0" VerticalAlignment="Top" Click="Button_Click_Exit"/>
-        <Button Content="Передать все книги в библиотеку" HorizontalAlignment="Left" Margin="315,70,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_All_Library"/>
-        <Button Content="Передать книгу в библиотеку" HorizontalAlignment="Left" Margin="315,41,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_Library"/>
-        <Button Content="Передать книгу читателю" HorizontalAlignment="Left" Margin="315,10,0,0" VerticalAlignment="Top" Click="Button_Click_Pass_Book"/>
-        <Button Content="Удалить книгу из библиотеки" HorizontalAlignment="Left" Margin="315,137,0,0" VerticalAlignment="Top" Click="Button_Click_Remove_Book_Library"/>
-        <Button Content="Удалить все книги из библиотеки" HorizontalAlignment="Left" Margin="315,175,0,0" VerticalAlignment="Top" Click="Button_Click_Remove_AllBook_Library" />
-
+        <Button Content="Передать все книги в библиотеку" HorizontalAlignment="Left" Margin="315,323,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_All_Library"/>
+        <Button Content="Передать книгу в библиотеку" HorizontalAlignment="Left" Margin="315,288,0,0" VerticalAlignment="Top" Click="Button_Click_Transfer_Library"/>
+        <Button Content="Передать книгу читателю" HorizontalAlignment="Left" Margin="315,53,0,0" VerticalAlignment="Top" Click="Button_Click_Pass_Book"/>
+        <Button Content="Удалить книгу из библиотеки" HorizontalAlignment="Left" Margin="316,118,0,0" VerticalAlignment="Top" Click="Button_Click_Remove_Book_Library"/>
+        <Button Content="Удалить все книги из библиотеки" HorizontalAlignment="Left" Margin="316,148,0,0" VerticalAlignment="Top" Click="Button_Click_Remove_AllBook_Library" />
     </Grid>
 </Window>

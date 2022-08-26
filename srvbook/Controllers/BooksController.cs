@@ -56,6 +56,21 @@ namespace srvbook.Controllers
             Console.WriteLine("CreatePerson");
         }
         [HttpGet]
+        [Route("/Books/TestRemoveAllPerson/")]
+        public void TestRemoveAllPerson()
+        {
+            listPerson.Clear();
+            Console.WriteLine("TestRemoveAllPerson");
+        }
+        [HttpGet]
+        [Route("/Books/TestGetAllPerson/")]
+        public string TestGetAllPerson()
+        {
+            string result = JsonConvert.SerializeObject(listPerson);
+            Console.WriteLine("TestGetAllPerson");
+            return result;
+        }
+        [HttpGet]
         [Route("/Books/RefreshPerson/")]
         public string RefreshPerson()
         {

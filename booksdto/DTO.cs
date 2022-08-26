@@ -18,18 +18,18 @@ namespace booksdto
     public class DTOClass
     {
         HttpClient client = new HttpClient();
-        public List<Person> CreatePerson()
+        public void CreatePerson()
         {
             var result = client.GetStringAsync("https://localhost:5001/Books/CreatePersons/");
-            Task.Delay(1000).Wait();
-            return JsonConvert.DeserializeObject<List<Person>>(result.Result);
+            Task.Delay(200).Wait();
+            //return JsonConvert.DeserializeObject<List<Person>>(result.Result);
         }
-        public List<Book> CreateBooks()
-        {
-            var result = client.GetStringAsync("https://localhost:5001/Books/CreateBooks/");
-            Task.Delay(1000).Wait();
-            return JsonConvert.DeserializeObject<List<Book>>(result.Result);
-        }
+        //public List<Book> CreateBooks()
+        //{
+        //    var result = client.GetStringAsync("https://localhost:5001/Books/CreateBooks/");
+        //    Task.Delay(1000).Wait();
+        //    return JsonConvert.DeserializeObject<List<Book>>(result.Result);
+        //}
         public List<string> RefreshBooksLibrary(List<Book> listBooks)
         {
             List<string> newBookList = new List<string>();

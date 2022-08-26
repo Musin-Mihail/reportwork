@@ -13,11 +13,13 @@
     <PackageReference Include="MSTest.TestAdapter" Version="2.2.8" />
     <PackageReference Include="MSTest.TestFramework" Version="2.2.8" />
     <PackageReference Include="coverlet.collector" Version="3.1.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\bibliobook\bibliobook.csproj" />
+    <ProjectReference Include="..\bookdb\bookdb.csproj" />
     <ProjectReference Include="..\booksdto\booksdto.csproj" />
+    <ProjectReference Include="..\srvbook\srvbook.csproj" />
   </ItemGroup>
 
 </Project>
